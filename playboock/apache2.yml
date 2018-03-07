@@ -1,0 +1,40 @@
+---
+
+- hosts: funny
+
+  tasks:
+
+   - name: Intalar Apache 
+     
+     apt: pkg=apache2 state=installed update_cache=true
+   - name: fichero de configuracion de mi sitio virtual
+
+     template: src=sitio.conf dest=/etc/apache2/sites-available/
+ 
+
+   - name: Habiltamos el fichero sitio.conf
+
+     shell: /usr/sbin/a2ensite sitio.conf
+
+   - name: Creo la carpeta donde se van a publicar mi sitio web
+
+     shell: /bin/mkdir -p /var/www/html/ANSIBLE
+
+   - name: Añado mi fichero index.html
+
+     template: src=index.html dest=/var/www/html/ANSIBLE
+
+   - name: Reinicio Apache2
+
+     action: service name=apache2 state=restarted
+    
+
+- hosts: funnier
+
+  tasks:
+    
+   - name: Modificacmos el fichero hosts de los dos equipos
+     
+     lineinfile: dest=/etc/hosts line="192.168.88.10	www.sitio.com"
+
+    

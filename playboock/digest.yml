@@ -1,0 +1,35 @@
+---
+
+- hosts: funny
+
+  tasks:
+
+   - name: Activo el modulo auth:digest
+     
+     shell: /usr/sbin/a2enmod auth_digest
+   - name: Paso el fichero que contiene el usuario y contraseña
+
+     template: src=ficheros/passwords.disgest dest=/etc/apache2/
+ 
+
+   - name: Para proteger el mi directorio añado estas lineas al dinal de apache2.conf
+
+     blockinfile:
+      
+      dest: /etc/apache2/apache2.conf
+      block: |
+       <Directory /var/www/html/ANSIBLE>
+            AuthType Digest
+            AuthName "Restringido"
+            AuthDigestProvider file
+            AuthUserFile /etc/apache2/passwords.digest
+            Require user larry moe
+       </Directory>
+      backup: yes
+
+
+   - name: Reinicio Apache2
+
+     action: service name=apache2 state=restarted
+    
+
